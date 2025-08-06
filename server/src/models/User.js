@@ -62,10 +62,6 @@ const userSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Index for search and query optimization
-userSchema.index({ username: 1 });
-userSchema.index({ email: 1 });
-
 // Virtual for full name
 userSchema.virtual('fullName').get(function() {
     if (this.firstName && this.lastName) {

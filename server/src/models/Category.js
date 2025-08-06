@@ -37,10 +37,6 @@ const categorySchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Index for performance
-categorySchema.index({ slug: 1 });
-categorySchema.index({ name: 1 });
-
 // Pre-save middleware to generate slug
 categorySchema.pre('save', function(next) {
     if (this.isModified('name') || this.isNew) {

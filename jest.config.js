@@ -7,7 +7,10 @@ module.exports = {
         {
             displayName: 'server',
             testEnvironment: 'node',
-            testMatch: ['<rootDir>/server/tests/**/*.test.js'],
+            testMatch: [
+                '<rootDir>/server/tests/**/*.test.js',
+                '<rootDir>/server/tests/**/*.spec.js'
+            ],
             moduleFileExtensions: ['js', 'json', 'node'],
             setupFilesAfterEnv: ['<rootDir>/server/tests/setup.js'],
             coverageDirectory: '<rootDir>/coverage/server',
@@ -17,14 +20,18 @@ module.exports = {
                 '!server/src/server.js',
                 '!**/node_modules/**',
             ],
-            // Remove testTimeout from here - it goes at global level
+            rootDir: '.',
+            roots: ['<rootDir>/server']
         },
 
         // Client-side tests configuration
         {
             displayName: 'client',
-            testEnvironment: 'jest-environment-jsdom', // Specify full package name
-            testMatch: ['<rootDir>/client/src/**/*.test.{js,jsx}'],
+            testEnvironment: 'jest-environment-jsdom',
+            testMatch: [
+                '<rootDir>/client/src/**/*.test.{js,jsx}',
+                '<rootDir>/client/src/**/*.spec.{js,jsx}'
+            ],
             moduleFileExtensions: ['js', 'jsx', 'json'],
             moduleNameMapper: {
                 '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
@@ -45,12 +52,13 @@ module.exports = {
                 '!client/src/vite-env.d.ts',
                 '!**/node_modules/**',
             ],
-            // Remove testTimeout from here - it goes at global level
+            rootDir: '.',
+            roots: ['<rootDir>/client']
         },
     ],
 
     // Global configuration
-    testTimeout: 30000, // Move testTimeout here at global level
+    testTimeout: 30000,
     verbose: true,
     collectCoverage: true,
     coverageReporters: ['text', 'lcov', 'clover', 'html'],
@@ -63,8 +71,6 @@ module.exports = {
         },
     },
     maxWorkers: '50%',
-
-    // Additional React 19 compatibility settings
     modulePathIgnorePatterns: ['<rootDir>/build/'],
     testPathIgnorePatterns: ['/node_modules/', '<rootDir>/build/'],
 };
