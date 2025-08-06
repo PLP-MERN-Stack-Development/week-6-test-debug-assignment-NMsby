@@ -9,8 +9,15 @@ const Post = require('../src/models/Post');
 const setupTestDB = async () => {
     try {
         // Connect to database
-        const mongoURI = process.env.MONGODB_TEST_URI || 'mongodb://localhost:27017/mern_testing_test';
-        await mongoose.connect(mongoURI);
+        const mongoURI = process.env.MONGODB_TEST_URI || 'mongodb://127.0.01:27017/mern_testing_test';
+
+        console.log(`Attempting to connect to: ${mongoURI}`);
+
+        await mongoose.connect(mongoURI), {
+            serverSelectionTimeoutMS: 5000,
+            heartbeatFrequencyMS: 2000
+        };
+
         console.log('Connected to test database');
 
         // Clear existing data
@@ -89,10 +96,22 @@ const setupTestDB = async () => {
         ]);
         console.log('Created test posts');
 
-        console.log('✅ Test database setup complete!');
+        console.log('Test database setup complete!');
         process.exit(0);
     } catch (error) {
-        console.error('❌ Error setting up test database:', error);
+        console.error('Error setting up test database:', error.message);
+
+        if (error.message.includes('ECONNREFUSED')) {
+            console.error('');
+            console.error('💡 MongoDB Connection Failed:');
+            console.error('   1. Make sure MongoDB is installed');
+            console.error('   2. Start MongoDB service:');
+            console.error('      - Windows: Run "net start MongoDB" as administrator');
+            console.error('      - Or use Services.msc to start "MongoDB Server"');
+            console.error('   3. Verify it\'s running: netstat -an | findstr :27017');
+            console.error('');
+        }
+
         process.exit(1);
     }
 };

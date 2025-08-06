@@ -4,16 +4,17 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
     try {
-        const mongoURI = process.env.MONGODB_URI || process.env.MONGODB_TEST_URI || 'mongodb://localhost:27017/mern_testing_dev';
+        const mongoURI = process.env.MONGODB_URI || process.env.MONGODB_TEST_URI || 'mongodb://127.0.0.1:27017/mern_testing_dev';
 
         const options = {
-            // Remove deprecated options that are now default in Mongoose 6+
-            // useNewUrlParser and useUnifiedTopology are no longer needed
+            serverSelectionTimeoutMS: 5000,
+            heartbeatFrequencyMS: 2000
         };
 
         const conn = await mongoose.connect(mongoURI, options);
 
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        console.log(`MongoDB Connected: ${conn.connection.host}:${conn.connection.port}`);
+        console.log(`Database: ${conn.connection.name}`);
 
         // Handle connection events
         mongoose.connection.on('error', (err) => {
@@ -22,6 +23,10 @@ const connectDB = async () => {
 
         mongoose.connection.on('disconnected', () => {
             console.warn('MongoDB disconnected');
+        });
+
+        mongoose.connection.on('reconnected', () => {
+            console.log('MongoDB reconnected');
         });
 
         // Graceful shutdown
@@ -33,6 +38,8 @@ const connectDB = async () => {
 
     } catch (error) {
         console.error(`Database connection failed: ${error.message}`);
+        console.error('Make sure MongoDB service is running on your system');
+        console.error('On Windows: Run "net start MongoDB" as administrator');
         process.exit(1);
     }
 };
