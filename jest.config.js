@@ -1,4 +1,4 @@
-// jest.config.js - Jest configuration for both server and client-side tests
+// jest.config.js - Configuration file for Jest testing framework
 
 module.exports = {
     // Base configuration for all tests
@@ -17,13 +17,13 @@ module.exports = {
                 '!server/src/server.js',
                 '!**/node_modules/**',
             ],
-            testTimeout: 30000,
+            // Remove testTimeout from here - it goes at global level
         },
 
         // Client-side tests configuration
         {
             displayName: 'client',
-            testEnvironment: 'jsdom',
+            testEnvironment: 'jest-environment-jsdom', // Specify full package name
             testMatch: ['<rootDir>/client/src/**/*.test.{js,jsx}'],
             moduleFileExtensions: ['js', 'jsx', 'json'],
             moduleNameMapper: {
@@ -45,11 +45,12 @@ module.exports = {
                 '!client/src/vite-env.d.ts',
                 '!**/node_modules/**',
             ],
-            testTimeout: 10000,
+            // Remove testTimeout from here - it goes at global level
         },
     ],
 
     // Global configuration
+    testTimeout: 30000, // Move testTimeout here at global level
     verbose: true,
     collectCoverage: true,
     coverageReporters: ['text', 'lcov', 'clover', 'html'],
@@ -62,4 +63,8 @@ module.exports = {
         },
     },
     maxWorkers: '50%',
+
+    // Additional React 19 compatibility settings
+    modulePathIgnorePatterns: ['<rootDir>/build/'],
+    testPathIgnorePatterns: ['/node_modules/', '<rootDir>/build/'],
 };

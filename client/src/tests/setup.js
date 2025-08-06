@@ -56,6 +56,3 @@ beforeAll(() => {
 afterAll(() => {
     console.error = originalError;
 });
-
-// Global test timeout
-jest.setTimeout(10000);

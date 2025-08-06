@@ -1,10 +1,9 @@
-// server/tests/setup.js - Server-side test setup
+// server/tests/setup.js - Jest setup file for server-side tests
 
 // Set test environment
 process.env.NODE_ENV = 'test';
 
-// Set longer timeout for integration tests
-jest.setTimeout(30000);
+// REMOVE this line - jest.setTimeout(30000); - timeout is now set globally in jest.config.js
 
 // Suppress mongoose deprecation warnings during tests
 process.env.SUPPRESS_NO_CONFIG_WARNING = 'true';
