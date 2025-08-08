@@ -1,20 +1,11 @@
-// client/src/tests/setup.js - Jest setup file for client-side tests
+// client/src/tests/setup.js - Jest setup for React Testing Library
 
 import '@testing-library/jest-dom';
+import { configure } from '@testing-library/react';
 
-// Mock window methods that might not be available in jsdom
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
+// Configure React Testing Library
+configure({
+    testIdAttribute: 'data-testid',
 });
 
 // Mock IntersectionObserver
@@ -33,19 +24,65 @@ global.ResizeObserver = class ResizeObserver {
     unobserve() {}
 };
 
-// Suppress act warnings during testing (React 19 compatibility)
+// Mock matchMedia
+Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // deprecated
+        removeListener: jest.fn(), // deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+    })),
+});
+
+// Mock scrollTo
+window.scrollTo = jest.fn();
+
+// Mock localStorage
+const localStorageMock = {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+    clear: jest.fn(),
+};
+global.localStorage = localStorageMock;
+
+// Mock sessionStorage
+const sessionStorageMock = {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+    clear: jest.fn(),
+};
+global.sessionStorage = sessionStorageMock;
+
+// Mock fetch
+global.fetch = jest.fn();
+
+// Setup fetch mock reset
+beforeEach(() => {
+    fetch.mockClear();
+    localStorageMock.getItem.mockClear();
+    localStorageMock.setItem.mockClear();
+    localStorageMock.removeItem.mockClear();
+    localStorageMock.clear.mockClear();
+    sessionStorageMock.getItem.mockClear();
+    sessionStorageMock.setItem.mockClear();
+    sessionStorageMock.removeItem.mockClear();
+    sessionStorageMock.clear.mockClear();
+});
+
+// Silence console.error during tests unless specifically testing error scenarios
 const originalError = console.error;
 beforeAll(() => {
     console.error = (...args) => {
         if (
             typeof args[0] === 'string' &&
             args[0].includes('Warning: ReactDOM.render is no longer supported')
-        ) {
-            return;
-        }
-        if (
-            typeof args[0] === 'string' &&
-            args[0].includes('Warning: An update to')
         ) {
             return;
         }

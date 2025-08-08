@@ -1,0 +1,38 @@
+{
+  "validUser": {
+    "username": "testuser",
+    "email": "test@example.com",
+    "password": "password123",
+    "firstName": "Test",
+    "lastName": "User"
+  },
+  "adminUser": {
+    "username": "adminuser",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "firstName": "Admin",
+    "lastName": "User",
+    "role": "admin"
+  },
+  "invalidUser": {
+    "username": "ab",
+    "email": "invalid-email",
+    "password": "123"
+  },
+  "testUsers": [
+    {
+      "username": "user1",
+      "email": "user1@example.com",
+      "password": "password123",
+      "firstName": "User",
+      "lastName": "One"
+    },
+    {
+      "username": "user2",
+      "email": "user2@example.com",
+      "password": "password123",
+      "firstName": "User",
+      "lastName": "Two"
+    }
+  ]
+}

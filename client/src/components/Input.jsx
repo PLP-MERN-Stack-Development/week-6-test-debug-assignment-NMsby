@@ -5,24 +5,35 @@ import PropTypes from 'prop-types';
 import './Input.css';
 
 const Input = forwardRef(({
+                              id,
                               label,
                               type = 'text',
+                              placeholder,
+                              value,
+                              defaultValue,
+                              onChange,
+                              onFocus,
+                              onBlur,
                               error,
                               helperText,
                               required = false,
                               disabled = false,
-                              placeholder,
                               className = '',
                               containerClassName = '',
-                              icon = null,
+                              icon,
                               iconPosition = 'left',
                               ...props
                           }, ref) => {
+    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const hasError = Boolean(error);
+    const hasIcon = Boolean(icon);
+
     const inputClasses = [
-        'input-field',
-        error ? 'input-error' : '',
+        'input',
+        `input-${type}`,
+        hasError ? 'input-error' : '',
         disabled ? 'input-disabled' : '',
-        icon ? `input-with-icon-${iconPosition}` : '',
+        hasIcon ? `input-with-icon-${iconPosition}` : '',
         className
     ].filter(Boolean).join(' ');
 
@@ -34,40 +45,63 @@ const Input = forwardRef(({
     return (
         <div className={containerClasses}>
             {label && (
-                <label className="input-label">
+                <label htmlFor={inputId} className="input-label">
                     {label}
                     {required && <span className="input-required">*</span>}
                 </label>
             )}
+
             <div className="input-wrapper">
-                {icon && iconPosition === 'left' && (
+                {hasIcon && iconPosition === 'left' && (
                     <div className="input-icon input-icon-left">
                         {icon}
                     </div>
                 )}
+
                 <input
                     ref={ref}
+                    id={inputId}
                     type={type}
-                    className={inputClasses}
-                    disabled={disabled}
                     placeholder={placeholder}
-                    aria-invalid={error ? 'true' : 'false'}
-                    aria-describedby={error ? `${props.id}-error` : helperText ? `${props.id}-helper` : undefined}
+                    value={value}
+                    defaultValue={defaultValue}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    disabled={disabled}
+                    required={required}
+                    className={inputClasses}
+                    aria-invalid={hasError}
+                    aria-describedby={
+                        hasError ? `${inputId}-error` :
+                            helperText ? `${inputId}-helper` :
+                                undefined
+                    }
                     {...props}
                 />
-                {icon && iconPosition === 'right' && (
+
+                {hasIcon && iconPosition === 'right' && (
                     <div className="input-icon input-icon-right">
                         {icon}
                     </div>
                 )}
             </div>
-            {error && (
-                <div className="input-error-message" id={`${props.id}-error`}>
+
+            {hasError && (
+                <div
+                    id={`${inputId}-error`}
+                    className="input-error-message"
+                    role="alert"
+                >
                     {error}
                 </div>
             )}
-            {helperText && !error && (
-                <div className="input-helper-text" id={`${props.id}-helper`}>
+
+            {!hasError && helperText && (
+                <div
+                    id={`${inputId}-helper`}
+                    className="input-helper-text"
+                >
                     {helperText}
                 </div>
             )}
@@ -78,18 +112,25 @@ const Input = forwardRef(({
 Input.displayName = 'Input';
 
 Input.propTypes = {
+    id: PropTypes.string,
     label: PropTypes.string,
-    type: PropTypes.string,
+    type: PropTypes.oneOf([
+        'text', 'password', 'email', 'number', 'tel', 'url', 'search'
+    ]),
+    placeholder: PropTypes.string,
+    value: PropTypes.string,
+    defaultValue: PropTypes.string,
+    onChange: PropTypes.func,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
     error: PropTypes.string,
     helperText: PropTypes.string,
     required: PropTypes.bool,
     disabled: PropTypes.bool,
-    placeholder: PropTypes.string,
     className: PropTypes.string,
     containerClassName: PropTypes.string,
     icon: PropTypes.node,
-    iconPosition: PropTypes.oneOf(['left', 'right']),
-    id: PropTypes.string
+    iconPosition: PropTypes.oneOf(['left', 'right'])
 };
 
 export default Input;
