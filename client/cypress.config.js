@@ -1,8 +1,8 @@
 // client/cypress.config.js - Cypress configuration
 
-const { defineConfig } = require('cypress');
+import { defineConfig } from 'cypress';
 
-module.exports = defineConfig({
+export default defineConfig({
     e2e: {
         baseUrl: 'http://localhost:3000',
         apiUrl: 'http://localhost:5000',
@@ -32,7 +32,6 @@ module.exports = defineConfig({
 
         setupNodeEvents(on, config) {
             // implement node event listeners here
-            require('@cypress/code-coverage/task')(on, config);
 
             // Set environment variables based on NODE_ENV
             if (config.env.NODE_ENV === 'development') {
